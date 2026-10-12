@@ -1,5 +1,18 @@
 # Heltec T114 — подключение к удалённому MeshMonitor
 
+## Содержание
+
+- [1. Общая схема](#1-общая-схема)
+- [2. Характеристики Heltec T114](#2-характеристики-heltec-t114)
+- [3. Шаг 1 — Прошивка T114 через компьютер](#3-шаг-1--прошивка-t114-через-компьютер)
+- [4. Шаг 2 — Подготовка компьютера](#4-шаг-2--подготовка-компьютера)
+- [5. Шаг 3 — Настройка T114](#5-шаг-3--настройка-t114)
+- [6. Шаг 4 — Настройка компьютера](#6-шаг-4--настройка-компьютера)
+- [7. Шаг 5 — Запуск и проверка](#7-шаг-5--запуск-и-проверка)
+- [8. Приложения для работы с T114 (GUI)](#8-приложения-для-работы-с-t114-gui)
+
+---
+
 ## 1. Общая схема
 
     T114 → USB или BLE → Компьютер → TCP или MQTT → MeshMonitor
@@ -10,6 +23,8 @@
 | 2 | USB | MQTT | Serial Bridge + MQTT Proxy |
 | 3 | BLE | TCP | BLE Bridge |
 | 4 | BLE | MQTT | BLE Bridge + MQTT Proxy |
+
+[↑ Наверх](#содержание)
 
 ---
 
@@ -44,6 +59,8 @@
 | GPIO 14 | 1 | Управление адресными RGB (NeoPixel) |
 | P1.03 | 1 | Встроенный зелёный светодиод |
 | GPS | 2 | GPIO 37/39 для модуля GPS |
+
+[↑ Наверх](#содержание)
 
 ---
 
@@ -113,6 +130,8 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 
 **Рекомендуется:** перед OTA установить **OTAFIX bootloader** через USB. Он делает OTA-обновления надёжнее и позволяет восстановиться после неудачной прошивки.
 
+[↑ Наверх](#содержание)
+
 ---
 
 ## 4. Шаг 2 — Подготовка компьютера
@@ -137,6 +156,8 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 Все команды ниже подаются с флагом `--port`, например:
 
     meshtastic --port COM3 --set serial.enabled true
+
+[↑ Наверх](#содержание)
 
 ---
 
@@ -163,6 +184,8 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 **Uplink/Downlink (сценарии 2, 4):**
 
     meshtastic --port COM3 --ch-index 0 --ch-set uplink_enabled true --ch-set downlink_enabled true
+
+[↑ Наверх](#содержание)
 
 ---
 
@@ -300,6 +323,8 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 
 **Когда использовать:** MeshMonitor удалён, T114 без кабеля.
 
+[↑ Наверх](#содержание)
+
 ---
 
 ## 7. Шаг 5 — Запуск и проверка
@@ -314,6 +339,8 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 
 Если пошли пакеты — данные от T114 доходят до MeshMonitor.
 
+[↑ Наверх](#содержание)
+
 ---
 
 ## 8. Приложения для работы с T114 (GUI)
@@ -326,3 +353,5 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 | **mesh-client** | Windows / macOS / Linux | [GitHub - Colorado-Mesh/mesh-client](https://github.com/Colorado-Mesh/mesh-client) | USB Serial, BLE, TCP, MQTT | Вкладка **Connection**, выбрать тип подключения (Serial для USB), указать порт |
 | **GTK Meshtastic Client** | Linux (Debian/Ubuntu/Arch) | Debian: `apt install gtk-meshtastic-client` / Arch AUR: [gtk-meshtastic-client](https://aur.archlinux.org/packages/gtk-meshtastic-client) | Serial, Bluetooth, TCP | Запустить, выбрать порт `/dev/ttyUSB0` или `COM3`, подключиться |
 | **Веб-клиент** | Любая (Chrome/Edge) | [client.meshtastic.org](https://client.meshtastic.org) | WebSerial (USB) | Только Chrome/Edge. **New Connection → Serial**, выбрать порт T114 |
+
+[↑ Наверх](#содержание)
