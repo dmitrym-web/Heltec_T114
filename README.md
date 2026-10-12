@@ -2,7 +2,7 @@
 
 ## Содержание
 
-- [1. Общая схема](#1-общая-схема)
+- [1. Введение](#1-введение)
 - [2. Характеристики Heltec T114](#2-характеристики-heltec-t114)
 - [3. Шаг 1 — Прошивка T114 через компьютер](#3-шаг-1--прошивка-t114-через-компьютер)
 - [4. Шаг 2 — Подготовка компьютера](#4-шаг-2--подготовка-компьютера)
@@ -13,16 +13,31 @@
 
 ---
 
-## 1. Общая схема
+## 1. Введение
 
-    T114 → USB или BLE → Компьютер → TCP или MQTT → MeshMonitor
+Для реализации интеграции платы Heltec T114, расположенной внутри локальной сети, к сервису MeshMonitor, необходимо её подключение и настройка к компьютеру, расположенному в этой же сети.
 
-| # | T114 → Компьютер | Компьютер → MeshMonitor | Что на компьютере |
+Плата Heltec T114 не имеет модуля Wi-Fi. Необходим физический доступ к компьютеру, чтобы можно было её подключить по Bluetooth или по USB.
+
+Отсюда четыре сценария:
+
+    T114 → USB или Bluetooth → Компьютер → TCP или MQTT → MeshMonitor
+
+| # | T114 → Компьютер | Компьютер → MeshMonitor | Что запущено на компьютере |
 |:---:|---|---|---|
 | 1 | USB | TCP | Serial Bridge |
 | 2 | USB | MQTT | Serial Bridge + MQTT Proxy |
-| 3 | BLE | TCP | BLE Bridge |
-| 4 | BLE | MQTT | BLE Bridge + MQTT Proxy |
+| 3 | Bluetooth | TCP | Bluetooth Bridge |
+| 4 | Bluetooth | MQTT | Bluetooth Bridge + MQTT Proxy |
+
+### Когда какой сценарий использовать
+
+| Сценарий | Когда использовать |
+|---|---|
+| 1 (USB → TCP) | MeshMonitor и компьютер в одной локальной сети. |
+| 2 (USB → MQTT) | MeshMonitor удалён, связь через MQTT-брокер. |
+| 3 (Bluetooth → TCP) | То же, что сценарий 1, но плата без кабеля. |
+| 4 (Bluetooth → MQTT) | То же, что сценарий 2, но плата без кабеля. |
 
 [↑ Наверх](#содержание)
 
@@ -167,8 +182,8 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 |---|:---:|:---:|:---:|
 | 1 (USB → TCP) | Да | Нет | Нет |
 | 2 (USB → MQTT) | Да | Да | Да |
-| 3 (BLE → TCP) | Нет | Нет | Нет |
-| 4 (BLE → MQTT) | Нет | Да | Да |
+| 3 (Bluetooth → TCP) | Нет | Нет | Нет |
+| 4 (Bluetooth → MQTT) | Нет | Да | Да |
 
 **Serial-режим (сценарии 1, 2):**
 
@@ -258,9 +273,9 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 
 ---
 
-### Сценарий 3. BLE → TCP
+### Сценарий 3. Bluetooth → TCP
 
-    T114 → BLE → BLE Bridge (TCP:4403) → MeshMonitor
+    T114 → Bluetooth → Bluetooth Bridge (TCP:4403) → MeshMonitor
 
 **T114:** ничего дополнительно.
 **Компьютер:** один контейнер.
@@ -286,9 +301,9 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 
 ---
 
-### Сценарий 4. BLE → MQTT
+### Сценарий 4. Bluetooth → MQTT
 
-    T114 → BLE → BLE Bridge (TCP:4403) → MeshMonitor → Virtual Node (4404) ← MQTT Proxy → Embedded Broker
+    T114 → Bluetooth → Bluetooth Bridge (TCP:4403) → MeshMonitor → Virtual Node (4404) ← MQTT Proxy → Embedded Broker
 
 **T114:** MQTT Client Proxy + Uplink/Downlink.
 **Компьютер:** два контейнера.
@@ -347,10 +362,10 @@ T114 поддерживает **Bluetooth OTA** через приложение 
 
 | Приложение | Платформа | Ссылка на скачивание | Тип подключения | Краткая настройка |
 |:---|:---|:---|:---|:---|
-| **Meshtastic Desktop** | Windows / macOS / Linux | [GitHub Releases](https://github.com/meshtastic/Meshtastic-Android/releases) (артефакты `desktop`) | USB Serial, BLE | Скачать `.msi`/`.dmg`/`.AppImage`, запустить, подключить T114 по USB, выбрать порт |
+| **Meshtastic Desktop** | Windows / macOS / Linux | [GitHub Releases](https://github.com/meshtastic/Meshtastic-Android/releases) (артефакты `desktop`) | USB Serial, Bluetooth | Скачать `.msi`/`.dmg`/`.AppImage`, запустить, подключить T114 по USB, выбрать порт |
 | **MeshMonitor Desktop** | Windows / macOS | [meshmonitor.org/configuration/desktop](https://meshmonitor.org/configuration/desktop) | TCP (через Serial Bridge) | Скачать `.exe`/`.dmg`, установить. Указать IP ноды (не USB). Для USB нужен Serial Bridge |
-| **LoRaChat** | Windows / macOS / Linux / Android | [GitHub - 404Nick/LoRaChat-Meshtastic-Desktop-Companion](https://github.com/404Nick/LoRaChat-Meshtastic-Desktop-Companion) | USB Serial (desktop), BLE (Android) | Внизу окна выбрать COM/tty порт, нажать **Listen** |
-| **mesh-client** | Windows / macOS / Linux | [GitHub - Colorado-Mesh/mesh-client](https://github.com/Colorado-Mesh/mesh-client) | USB Serial, BLE, TCP, MQTT | Вкладка **Connection**, выбрать тип подключения (Serial для USB), указать порт |
+| **LoRaChat** | Windows / macOS / Linux / Android | [GitHub - 404Nick/LoRaChat-Meshtastic-Desktop-Companion](https://github.com/404Nick/LoRaChat-Meshtastic-Desktop-Companion) | USB Serial (desktop), Bluetooth (Android) | Внизу окна выбрать COM/tty порт, нажать **Listen** |
+| **mesh-client** | Windows / macOS / Linux | [GitHub - Colorado-Mesh/mesh-client](https://github.com/Colorado-Mesh/mesh-client) | USB Serial, Bluetooth, TCP, MQTT | Вкладка **Connection**, выбрать тип подключения (Serial для USB), указать порт |
 | **GTK Meshtastic Client** | Linux (Debian/Ubuntu/Arch) | Debian: `apt install gtk-meshtastic-client` / Arch AUR: [gtk-meshtastic-client](https://aur.archlinux.org/packages/gtk-meshtastic-client) | Serial, Bluetooth, TCP | Запустить, выбрать порт `/dev/ttyUSB0` или `COM3`, подключиться |
 | **Веб-клиент** | Любая (Chrome/Edge) | [client.meshtastic.org](https://client.meshtastic.org) | WebSerial (USB) | Только Chrome/Edge. **New Connection → Serial**, выбрать порт T114 |
 
